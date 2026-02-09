@@ -1,0 +1,63 @@
+<%= form_with(model: task, class: "task-form", 
+              data: { form_guard_target: "form", action: "submit->form-guard#submitForm" }) do |form| %>
+  <% if task.errors.any? %>
+    <div class="alert alert-error">
+      <h3><%= pluralize(task.errors.count, "error") %> prohibited this task from being saved:</h3>
+      <ul>
+        <% task.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-group">
+    <%= form.label :title, class: "form-label" %>
+    <%= form.text_field :title, class: "form-control", placeholder: "Enter task title", required: true %>
+  </div>
+
+  <div class="form-group">
+    <%= form.label :description, class: "form-label" %>
+    <%= form.text_area :description, class: "form-control", placeholder: "Enter task description", rows: 4 %>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group">
+      <%= form.label :status, class: "form-label" %>
+      <%= form.select :status, 
+                      options_for_select([
+                        ['Created', 'created'],
+                        ['In Progress', 'in_progress'],
+                        ['Pending', 'pending'],
+                        ['Done', 'done'],
+                        ['Cancelled', 'cancel']
+                      ], task.status),
+                      {}, 
+                      class: "form-control" %>
+    </div>
+
+    <div class="form-group">
+      <%= form.label :priority, class: "form-label" %>
+      <%= form.select :priority,
+                      options_for_select([
+                        ['Low', 'low'],
+                        ['Medium', 'mid'],
+                        ['High', 'high']
+                      ], task.priority),
+                      {},
+                      class: "form-control" %>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <%= form.submit class: "btn btn-primary" %>
+    <%= link_to "Cancel", task.persisted? ? task_path(task) : tasks_path, 
+                class: "btn btn-secondary", 
+                data: { action: "click->form-guard#confirmCancel" } %>
+    <% if task.persisted? %>
+      <%= link_to "Back to Index", tasks_path, 
+                  class: "btn btn-warning", 
+                  data: { action: "click->form-guard#confirmCancel" } %>
+    <% end %>
+  </div>
+<% end %>

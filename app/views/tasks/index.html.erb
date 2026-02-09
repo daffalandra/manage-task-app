@@ -1,0 +1,44 @@
+<div class="tasks-container">
+  <div class="tasks-header">
+    <h1>Task Manager</h1>
+    <%= link_to "New Task", new_task_path, class: "btn btn-primary" %>
+  </div>
+
+  <% if notice %>
+    <div class="alert alert-success"><%= notice %></div>
+  <% end %>
+
+  <div class="tasks-grid">
+    <% @tasks.each do |task| %>
+      <div class="task-card">
+        <div class="task-header">
+          <h3><%= task.title %></h3>
+          <div class="task-badges">
+            <span class="badge badge-<%= task.status %>"><%= task.status.humanize %></span>
+            <span class="badge badge-priority-<%= task.priority %>"><%= task.priority.upcase %></span>
+          </div>
+        </div>
+        
+        <p class="task-description"><%= task.description %></p>
+        
+        <div class="task-meta">
+          <small>Created: <%= task.created_at.strftime("%b %d, %Y") %></small>
+        </div>
+        
+        <div class="task-actions">
+          <%= link_to "View Details", task_path(task), class: "btn btn-secondary" %>
+          <%= button_to "Delete", task_path(task), method: :delete, 
+                        data: { turbo_confirm: "Are you sure?" }, 
+                        class: "btn btn-danger" %>
+        </div>
+      </div>
+    <% end %>
+  </div>
+
+  <% if @tasks.empty? %>
+    <div class="empty-state">
+      <p>No tasks yet. Create your first task to get started!</p>
+      <%= link_to "Create Task", new_task_path, class: "btn btn-primary" %>
+    </div>
+  <% end %>
+</div>
